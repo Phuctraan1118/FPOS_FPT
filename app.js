@@ -94,8 +94,8 @@ app.get("/paypal", (req, res) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "https://backend-f-pos.vercel.app/success",
-      cancel_url: "https://backend-f-pos.vercel.app/cancel",
+      return_url: "https://fpos-fpt.vercel.app/success",
+      cancel_url: "https://fpos-fpt.vercel.app/cancel",
     },
     transactions: [
       {
