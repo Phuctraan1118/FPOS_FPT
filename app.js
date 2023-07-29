@@ -152,12 +152,15 @@ app.get("/success", (req, res) => {
     function (error, payment) {
       if (error) {
         console.log(error.response);
+        const sendDataToReactNativeApp = async () => {
+          window.ReactNativeWebView.postMessage("Data from WebView / Website");
+        };
         throw error;
       } else {
         console.log("Get Payment Response");
         console.log(JSON.stringify(payment));
         console.log(payment.payer.status);
-        res.sendFile(__dirname + "./views/success.html");
+        res.redirect("/products");
       }
     }
   );
