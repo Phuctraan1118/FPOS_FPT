@@ -102,7 +102,7 @@ module.exports.updateUser = async (req, res) => {
     if (!user) return res.send("User does not exist");
 
     // Update the "payment" attribute in the user document
-    user.payment = req.body.payment;
+    user.payment = true;
     await user.save();
 
     return res.json({
