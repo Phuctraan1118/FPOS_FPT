@@ -94,16 +94,23 @@ module.exports.register = async (req, res) => {
 //     return res.send("error : ", error.message);
 //   }
 // };
+
 module.exports.updateUser = async (req, res) => {
   try {
     const { id } = req.query;
-    const user = await userModel.findOne({ _id: id });
+    const { payment } = req.body;
 
-    if (!user) return res.send("User does not exist");
+    const user = await userModel.findOneAndUpdate(
+      { _id: id },
+      { payment: payment },
+      { new: true }
+    );
 
-    // Update the "payment" attribute in the user document
-    user.payment = true;
-    await user.save();
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User does not exist" });
+    }
 
     return res.json({
       success: true,
@@ -111,7 +118,9 @@ module.exports.updateUser = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    return res.send("Error: " + error.message);
+    return res
+      .status(500)
+      .json({ success: false, message: "Error: " + error.message });
   }
 };
 
