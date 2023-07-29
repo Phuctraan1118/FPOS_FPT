@@ -160,7 +160,8 @@ app.get("/success", (req, res) => {
         console.log("Get Payment Response");
         console.log(JSON.stringify(payment));
         console.log(payment.payer.status);
-        res.sendFile("views/success.html", { root: __dirname });
+        var html = fs.readFileSync("./views/success.html", "utf8");
+        res.render("success", { html: html });
       }
     }
   );
