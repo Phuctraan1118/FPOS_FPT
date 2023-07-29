@@ -160,7 +160,7 @@ app.get("/success", (req, res) => {
         console.log("Get Payment Response");
         console.log(JSON.stringify(payment));
         console.log(payment.payer.status);
-        res.send("success");
+        res.render("success");
       }
     }
   );
