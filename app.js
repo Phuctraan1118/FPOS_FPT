@@ -17,9 +17,6 @@ paypal.configure({
   client_secret:
     "ENgtHS84I0eKC3fzxk-vmFa4bhZ2mX81CCiye6cUVsjIAiECaxqxAbyhbSk1MFMCC0bTyrlKKhgm0ClP",
 });
-app.engine("ejs", engines.ejs);
-app.set("views", "./views");
-app.set("view engine", "ejs");
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
@@ -160,8 +157,7 @@ app.get("/success", (req, res) => {
         console.log("Get Payment Response");
         console.log(JSON.stringify(payment));
         console.log(payment.payer.status);
-        var html = fs.readFileSync("./views/success.html", "utf8");
-        res.render("success", { html: html });
+        res.sendFile(__dirname + "./views/success.html");
       }
     }
   );
