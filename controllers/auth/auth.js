@@ -101,17 +101,14 @@ module.exports.updateUser = async (req, res) => {
 
     if (!user) return res.send("User does not exist");
 
-    // Update the "payment" attribute in userDataToBeUpdated
-    const updatedUser = await userModel.findOneAndUpdate(
-      { _id: id },
-      { payment: req.body.payment },
-      { new: true }
-    );
+    // Update the "payment" attribute in the user document
+    user.payment = req.body.payment;
+    await user.save();
 
     return res.json({
       success: true,
-      message: "User updated successfully",
-      data: updatedUser,
+      message: "User payment updated successfully",
+      data: user,
     });
   } catch (error) {
     return res.send("Error: " + error.message);
