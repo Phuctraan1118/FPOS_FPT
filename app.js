@@ -6,8 +6,18 @@ const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 var path = require("path");
 var cors = require("cors");
+const engines = require("consolidate");
+const paypal = require("paypal-rest-sdk");
 
 // To access public folder
+paypal.configure({
+  mode: "sandbox", //sandbox or live
+  client_id:
+    "AU4u2BCKN52ah7wljq-He9fsv27yB-Ia7y0SRBjXyEPLwH2cAgw7Wstm-q0Ewh4bnHn7f8EGfaZqiGvJ",
+  client_secret:
+    "ENgtHS84I0eKC3fzxk-vmFa4bhZ2mX81CCiye6cUVsjIAiECaxqxAbyhbSk1MFMCC0bTyrlKKhgm0ClP",
+});
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -74,7 +84,87 @@ const {
 const mongoose = require("./config/database")();
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello Worldddd!");
+});
+
+app.get("/paypal", (req, res) => {
+  var create_payment_json = {
+    intent: "sale",
+    payer: {
+      payment_method: "paypal",
+    },
+    redirect_urls: {
+      return_url: "https://backend-f-pos.vercel.app/success",
+      cancel_url: "https://backend-f-pos.vercel.app/cancel",
+    },
+    transactions: [
+      {
+        item_list: {
+          items: [
+            {
+              name: "item",
+              sku: "item",
+              price: "5.00",
+              currency: "USD",
+              quantity: 1,
+            },
+          ],
+        },
+        amount: {
+          currency: "USD",
+          total: "5.00",
+        },
+        description: "This is the payment description.",
+      },
+    ],
+  };
+
+  paypal.payment.create(create_payment_json, function (error, payment) {
+    if (error) {
+      throw error;
+    } else {
+      console.log("Create Payment Response");
+      console.log(payment);
+      res.redirect(payment.links[1].href);
+    }
+  });
+});
+
+app.get("/success", (req, res) => {
+  // res.send("Success");
+  var PayerID = req.query.PayerID;
+  var paymentId = req.query.paymentId;
+  var execute_payment_json = {
+    payer_id: PayerID,
+    transactions: [
+      {
+        amount: {
+          currency: "USD",
+          total: "5.00",
+        },
+      },
+    ],
+  };
+
+  paypal.payment.execute(
+    paymentId,
+    execute_payment_json,
+    function (error, payment) {
+      if (error) {
+        console.log(error.response);
+        throw error;
+      } else {
+        console.log("Get Payment Response");
+        console.log(JSON.stringify(payment));
+        console.log(payment.payer.status);
+        res.send("<h1 style:{text-align: center}>Successfully: </h1>");
+      }
+    }
+  );
+});
+
+app.get("/cancel", (req, res) => {
+  res.render("cancel");
 });
 
 // AUTH
