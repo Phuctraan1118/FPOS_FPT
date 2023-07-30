@@ -104,7 +104,7 @@ app.get("/paypal", (req, res) => {
             {
               name: "item",
               sku: "item",
-              price: "5.00",
+              price: "2.50",
               currency: "USD",
               quantity: 1,
             },
@@ -112,7 +112,7 @@ app.get("/paypal", (req, res) => {
         },
         amount: {
           currency: "USD",
-          total: "5.00",
+          total: "2.50",
         },
         description: "This is the payment description.",
       },
@@ -140,7 +140,7 @@ app.get("/success", (req, res) => {
       {
         amount: {
           currency: "USD",
-          total: "5.00",
+          total: "2.50",
         },
       },
     ],
